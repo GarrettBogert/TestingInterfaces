@@ -47,30 +47,23 @@ namespace NUnitTestProject1
     [TestFixtureSource(typeof(TesterCheckProvider))]
     public class TesterTests
     {
-        private readonly TesterCheckParameters parameters;
-        public TesterTests(TesterCheckParameters parameters)
+        private readonly TesterCheck input;
+        public TesterTests(TesterCheck input)
         {
-            this.parameters = parameters;
+            this.input = input;
         }
 
         [Test]
-        public void CheckTester()
+        public void CheckTest()
         {
-            var tester = new Tester();
-            CheckTest(tester, parameters);
-        }
+           
+            CheckTest(input.tester, input);
+        }     
 
-        [Test]
-        public void CheckTester2()
+        public void CheckTest(ITester tester, TesterCheck input)
         {
-            var tester = new Tester2();
-            CheckTest(tester, parameters);
-        }
-
-        public void CheckTest(ITester tester, TesterCheckParameters parameters)
-        {
-            bool result = tester.Check(parameters.Number1, parameters.Number2);
-            Assert.AreEqual(parameters.Expected, result);
+            bool result = tester.Check(input.parameters.Number1, input.parameters.Number2);
+            Assert.AreEqual(input.parameters.Expected, result);
         }
 
 
