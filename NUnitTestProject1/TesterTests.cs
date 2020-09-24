@@ -10,32 +10,41 @@ using System.Linq;
 
 namespace NUnitTestProject1
 {
-
-    public class TesterCheckParametersProvider : IEnumerable<TesterCheckParameters>
+    public struct TesterCheck
     {
-        public IEnumerator<TesterCheckParameters> GetEnumerator()
+        public ITester tester;
+        public TesterCheckParameters parameters;
+        public TesterCheck(ITester x, TesterCheckParameters y)
         {
-            //Hardcoding just to prove out the test fixture source part of this solution.
-            //TODO: actually read and deserialize the Check parameters from the json file.
-            var data = new List<TesterCheckParameters> { new TesterCheckParameters { Number1 = 6, Number2 = 7, Expected = true }, new TesterCheckParameters { Number1 = 7, Number2 = 7, Expected = true } };
-            //Excellent. Types is now the concrete Tester objects.
-            //TODO: Come up with a single object structure to present the tester AND a given set of test data, in a cartesian fashion (Tester1 + each different data, Tester2 + each different data). I could use a struct or tuple.
+            this.tester = x;
+            this.parameters = y;
+        }
+    }
+    public class TesterCheckProvider : IEnumerable<TesterCheck>
+    {
+        public IEnumerator<TesterCheck> GetEnumerator()
+        {           
+            var data = new List<TesterCheckParameters> { new TesterCheckParameters { Number1 = 6, Number2 = 7, Expected = true }, new TesterCheckParameters { Number1 = 7, Number2 = 7, Expected = true } };          
             var type = typeof(ITester);
-            var types = AppDomain.CurrentDomain.GetAssemblies()
+            var testers = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
-                .Where(p => type.IsAssignableFrom(p) && !p.IsInterface)
+                .Where(p => type.IsAssignableFrom(p) && !p.IsInterface)//Without !isInterface, the interface itself gets returned, I only want concrete.
                 .ToList()
-                .Select(t => Activator.CreateInstance(Type.GetType(t.AssemblyQualifiedName)) as ITester);
-         
-            return data.GetEnumerator();
+                .Select(t => Activator.CreateInstance(Type.GetType(t.AssemblyQualifiedName)) as ITester)
+                .ToList();
+
+            //I really wanted these next two lines to be a single Linq statement. I know its possible...
+            var cartesian = new List<TesterCheck>();
+            testers.ForEach(t => data.ForEach(d => cartesian.Add(new TesterCheck(t, d))));
+            return cartesian.GetEnumerator();
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TesterCheckParameters>)this).GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TesterCheck>)this).GetEnumerator();
     }
 
 
     [TestFixture]
-    [TestFixtureSource(typeof(TesterCheckParametersProvider))]
+    [TestFixtureSource(typeof(TesterCheckProvider))]
     public class TesterTests
     {
         private readonly TesterCheckParameters parameters;
