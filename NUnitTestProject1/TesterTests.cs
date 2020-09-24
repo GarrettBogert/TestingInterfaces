@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Reflection;
 using System.Collections;
+using System;
+using System.Linq;
 
 namespace NUnitTestProject1
 {
@@ -16,8 +18,15 @@ namespace NUnitTestProject1
             //Hardcoding just to prove out the test fixture source part of this solution.
             //TODO: actually read and deserialize the Check parameters from the json file.
             var data = new List<TesterCheckParameters> { new TesterCheckParameters { Number1 = 6, Number2 = 7, Expected = true }, new TesterCheckParameters { Number1 = 7, Number2 = 7, Expected = true } };
-            //TODO: Also find a way to represent the tester class in the JSON file. Perhaps this method can use Reflection to find the Type to instantiate and bind to the TesterCheckParameters?
-
+            //Excellent. Types is now the concrete Tester objects.
+            //TODO: Come up with a single object structure to present the tester AND a given set of test data, in a cartesian fashion (Tester1 + each different data, Tester2 + each different data). I could use a struct or tuple.
+            var type = typeof(ITester);
+            var types = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(p => type.IsAssignableFrom(p) && !p.IsInterface)
+                .ToList()
+                .Select(t => Activator.CreateInstance(Type.GetType(t.AssemblyQualifiedName)) as ITester);
+         
             return data.GetEnumerator();
         }
 
