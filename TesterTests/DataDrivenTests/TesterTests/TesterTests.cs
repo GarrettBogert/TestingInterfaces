@@ -38,9 +38,11 @@ namespace NUnitTestProject1
             {
                 var json = sr.ReadToEnd();
                 var data = JsonConvert.DeserializeObject<List<TParameter>>(json);
-                //Cartesian in this case meaning every known ITester being run with every set of Tester inputs given the generic input type TParameter.                
-                var cartesian = new List<TesterData<TParameter>>();
-                testers.ForEach(t => data.ForEach(d => cartesian.Add(new TesterData<TParameter>(t, d))));
+
+                //Cartesian in this case meaning every known ITester being run with every set of Tester inputs given the generic input type TParameter.      
+                var cartesian = testers.SelectMany(tester => data.Select(parameters => new 
+                    TesterData<TParameter>(tester, parameters)));
+                
                 return cartesian.GetEnumerator();
             }
         }
