@@ -86,7 +86,7 @@ namespace NUnitTestProject1
             CountTest(input);
         }
 
-        public void CountTest(TesterData<TesterCount> input)
+        private void CountTest(TesterData<TesterCount> input)
         {
             var result = input.tester.Count(input.parameters.Numbers);
             Assert.AreEqual(input.parameters.Expected, result);
