@@ -8,9 +8,8 @@ using System.Collections;
 using System;
 using System.Linq;
 using System.IO;
-using NUnitTestProject1.BaseClasses;
 
-namespace NUnitTestProject1
+namespace TesterTests
 {
     //TParameter will be either TesterCount or TesterCheck - representing parameters/arguments coming from a JSON document.
     public struct TesterData<TParameter>
@@ -32,7 +31,7 @@ namespace NUnitTestProject1
             var testers = GetTesters();
 
             var paramType = typeof(TParameter).Name;
-            string directoryOfJson = Path.Combine(Directory.GetCurrentDirectory(), $"DataDrivenTests/TesterTests/{paramType}.json");
+            string directoryOfJson = Path.Combine(Directory.GetCurrentDirectory(), $"TesterTests/{paramType}.json");
 
             using (StreamReader sr = new StreamReader(directoryOfJson))
             {

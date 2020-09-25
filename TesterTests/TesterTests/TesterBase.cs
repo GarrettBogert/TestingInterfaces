@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Testers;
 
-namespace NUnitTestProject1.BaseClasses
+namespace TesterTests
 {
     public class TesterBase
     {

@@ -1,4 +1,4 @@
-﻿namespace NUnitTestProject1
+﻿namespace TesterTests
 {
     public class TesterCheckTestInputs
     {
