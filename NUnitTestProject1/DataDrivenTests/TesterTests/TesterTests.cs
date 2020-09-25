@@ -12,94 +12,115 @@ using NUnitTestProject1.BaseClasses;
 
 namespace NUnitTestProject1
 {
-    public struct TesterCheck
+    public struct TesterCheckData
     {
         public ITester tester;
         public TesterCheckParameters parameters;
-        public TesterCheck(ITester x, TesterCheckParameters y)
+        public TesterCheckData(ITester x, TesterCheckParameters y)
         {
             this.tester = x;
             this.parameters = y;
         }
     }
 
-    public struct TesterCount
+    public struct TesterCountData
     {
         public ITester tester;
         public TesterCountParameters parameters;
-        public TesterCount(ITester x, TesterCountParameters y)
+        public TesterCountData(ITester x, TesterCountParameters y)
         {
             this.tester = x;
             this.parameters = y;
         }
     }
 
-    public class TesterCountParameters
+    public class TesterCheckProvider : TesterBase, IEnumerable<TesterCheckData>
     {
-        public int[] numbers { get; set; }
-    }
-
-    public class TesterCheckProvider : TesterBase, IEnumerable<TesterCheck>
-    {
-        public IEnumerator<TesterCheck> GetEnumerator()
-        {  
+        public IEnumerator<TesterCheckData> GetEnumerator()
+        {
             var testers = GetTesters();
             //TODO: Make this hardcoded path simpler and more programmatic. It works for now though.
-            string directoryOfJson = Path.Combine(Directory.GetCurrentDirectory(), "DataDrivenTests/TesterTests/TesterTests.json");
+            string directoryOfJson = Path.Combine(Directory.GetCurrentDirectory(), "DataDrivenTests/TesterTests/TesterCheckTests.json");
 
             using (StreamReader sr = new StreamReader(directoryOfJson))
             {
                 var json = sr.ReadToEnd();
                 var data = JsonConvert.DeserializeObject<List<TesterCheckParameters>>(json);
-                var cartesian = new List<TesterCheck>();
-                testers.ForEach(t => data.ForEach(d => cartesian.Add(new TesterCheck(t, d))));
+                var cartesian = new List<TesterCheckData>();
+                testers.ForEach(t => data.ForEach(d => cartesian.Add(new TesterCheckData(t, d))));
                 return cartesian.GetEnumerator();
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TesterCheck>)this).GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TesterCheckData>)this).GetEnumerator();
+    }
+    //TODO: Make a single generic provider that can provide count and check data, embarassingly programmatic here.
+    public class TesterCountProvider : TesterBase, IEnumerable<TesterCountData>
+    {
+        public IEnumerator<TesterCountData> GetEnumerator()
+        {
+            var testers = GetTesters();
+            //TODO: Make this hardcoded path simpler and more programmatic. It works for now though.
+            string directoryOfJson = Path.Combine(Directory.GetCurrentDirectory(), "DataDrivenTests/TesterTests/TesterCountTests.json");
+
+            using (StreamReader sr = new StreamReader(directoryOfJson))
+            {
+                var json = sr.ReadToEnd();
+                var data = JsonConvert.DeserializeObject<List<TesterCountParameters>>(json);
+                var cartesian = new List<TesterCountData>();
+                testers.ForEach(t => data.ForEach(d => cartesian.Add(new TesterCountData(t, d))));
+                return cartesian.GetEnumerator();
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TesterCountData>)this).GetEnumerator();
     }
 
 
     [TestFixture]
     [TestFixtureSource(typeof(TesterCheckProvider))]
-    public class TesterTests
+    public class TesterCheckTests
     {
-        private readonly TesterCheck input;
-        public TesterTests(TesterCheck input)
+        private readonly TesterCheckData input;
+        public TesterCheckTests(TesterCheckData input)
         {
             this.input = input;
         }
 
         [Test]
         public void CheckTest()
-        {           
-            CheckTest(input.tester, input);
+        {
+            CheckTest(input);
+        }
+
+        private void CheckTest(TesterCheckData input)
+        {
+            bool result = input.tester.Check(input.parameters.Number1, input.parameters.Number2);
+            Assert.AreEqual(input.parameters.Expected, result);
+        }
+    }
+
+    [TestFixture]
+    [TestFixtureSource(typeof(TesterCountProvider))]
+    public class TesterCountTests
+    {
+        private readonly TesterCountData input;
+        public TesterCountTests(TesterCountData input)
+        {
+            this.input = input;
         }
 
         [Test]
         public void CountTest()
         {
             //hard coding values for now 
-            CountTest(input.tester, new int[] { 2, 2, 2, 3, 4, 1 });
+            CountTest(input);
         }
 
-        public void CheckTest(ITester tester, TesterCheck input)
+        public void CountTest(TesterCountData input)
         {
-            bool result = tester.Check(input.parameters.Number1, input.parameters.Number2);
+            var result = input.tester.Count(input.parameters.Numbers);
             Assert.AreEqual(input.parameters.Expected, result);
-        }
-
-        public void CountTest(ITester tester, int[] numbers)
-        {
-            var result = tester.Count(numbers);
-            Assert.AreEqual(input.parameters.Expected, result);
-        }
-
-
-        [SetUp]
-        public void Setup()
-        {
         }
     }
 }

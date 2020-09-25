@@ -18,7 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="DataDrivenTests\TesterTests\TesterTests.json">
+    <None Update="DataDrivenTests\TesterTests\TesterCountTests.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DataDrivenTests\TesterTests\TesterCheckTests.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
