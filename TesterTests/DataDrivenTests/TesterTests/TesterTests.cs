@@ -32,7 +32,7 @@ namespace NUnitTestProject1
             var testers = GetTesters();
 
             var paramType = typeof(TParameter).Name;
-            string directoryOfJson = Path.Combine(Directory.GetCurrentDirectory(), $"DataDrivenTests/TesterTests/{paramType}Tests.json");
+            string directoryOfJson = Path.Combine(Directory.GetCurrentDirectory(), $"DataDrivenTests/TesterTests/{paramType}Data.json");
 
             using (StreamReader sr = new StreamReader(directoryOfJson))
             {

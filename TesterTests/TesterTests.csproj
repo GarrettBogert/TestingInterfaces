@@ -14,14 +14,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary1\Testers.csproj" />
+    <ProjectReference Include="..\Testers\Testers.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="DataDrivenTests\TesterTests\TesterCountTests.json">
+    <None Update="DataDrivenTests\TesterTests\TesterCountData.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="DataDrivenTests\TesterTests\TesterCheckTests.json">
+    <None Update="DataDrivenTests\TesterTests\TesterCheckData.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
