@@ -1,6 +1,6 @@
 ﻿namespace NUnitTestProject1
 {
-    public class TesterCheckParameters
+    public class TesterCheck
     {
         public int Number1 { get; set; }
         public float Number2 { get; set; }
