@@ -1,0 +1,17 @@
+[
+  {
+    "Number1": 6,
+    "Number2": 7,
+    "Expected": true
+  },
+  {
+    "Number1": 7,
+    "Number2": 7,
+    "Expected": true
+  },
+  {
+    "Number1": 8,
+    "Number2": 7,
+    "Expected": false
+  }
+]
