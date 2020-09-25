@@ -32,12 +32,13 @@ namespace NUnitTestProject1
             var testers = GetTesters();
 
             var paramType = typeof(TParameter).Name;
-            string directoryOfJson = Path.Combine(Directory.GetCurrentDirectory(), $"DataDrivenTests/TesterTests/{paramType}Data.json");
+            string directoryOfJson = Path.Combine(Directory.GetCurrentDirectory(), $"DataDrivenTests/TesterTests/{paramType}.json");
 
             using (StreamReader sr = new StreamReader(directoryOfJson))
             {
                 var json = sr.ReadToEnd();
                 var data = JsonConvert.DeserializeObject<List<TParameter>>(json);
+                //Cartesian in this case meaning every known ITester being run with every set of Tester inputs given the generic input type TParameter.                
                 var cartesian = new List<TesterData<TParameter>>();
                 testers.ForEach(t => data.ForEach(d => cartesian.Add(new TesterData<TParameter>(t, d))));
                 return cartesian.GetEnumerator();
@@ -49,11 +50,11 @@ namespace NUnitTestProject1
 
 
     [TestFixture]
-    [TestFixtureSource(typeof(TesterDataProvider<TesterCheck>))]
+    [TestFixtureSource(typeof(TesterDataProvider<TesterCheckTestInputs>))]
     public class TesterCheckTests
     {
-        private readonly TesterData<TesterCheck> input;
-        public TesterCheckTests(TesterData<TesterCheck> input)
+        private readonly TesterData<TesterCheckTestInputs> input;
+        public TesterCheckTests(TesterData<TesterCheckTestInputs> input)
         {
             this.input = input;
         }
@@ -64,7 +65,7 @@ namespace NUnitTestProject1
             CheckTest(input);
         }
 
-        private void CheckTest(TesterData<TesterCheck> input)
+        private void CheckTest(TesterData<TesterCheckTestInputs> input)
         {
             bool result = input.tester.Check(input.parameters.Number1, input.parameters.Number2);
             Assert.AreEqual(input.parameters.Expected, result);
@@ -72,11 +73,11 @@ namespace NUnitTestProject1
     }
 
     [TestFixture]
-    [TestFixtureSource(typeof(TesterDataProvider<TesterCount>))]
+    [TestFixtureSource(typeof(TesterDataProvider<TesterCountTestInputs>))]
     public class TesterCountTests
     {
-        private readonly TesterData<TesterCount> input;
-        public TesterCountTests(TesterData<TesterCount> input)
+        private readonly TesterData<TesterCountTestInputs> input;
+        public TesterCountTests(TesterData<TesterCountTestInputs> input)
         {
             this.input = input;
         }
@@ -87,7 +88,7 @@ namespace NUnitTestProject1
             CountTest(input);
         }
 
-        private void CountTest(TesterData<TesterCount> input)
+        private void CountTest(TesterData<TesterCountTestInputs> input)
         {
             var result = input.tester.Count(input.parameters.Numbers);
             Assert.AreEqual(input.parameters.Expected, result);

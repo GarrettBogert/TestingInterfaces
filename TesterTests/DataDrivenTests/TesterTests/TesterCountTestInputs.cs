@@ -2,7 +2,7 @@
 
 namespace NUnitTestProject1
 {
-    public class TesterCount
+    public class TesterCountTestInputs
     {
         public int[] Numbers { get; set; }
         public Dictionary<int,int> Expected { get; set; }
