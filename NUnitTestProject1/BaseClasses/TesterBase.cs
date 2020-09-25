@@ -13,7 +13,7 @@ namespace NUnitTestProject1.BaseClasses
             var type = typeof(ITester);
             var testers = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
-                .Where(p => type.IsAssignableFrom(p) && !p.IsInterface)
+                .Where(p => type.IsAssignableFrom(p) && !p.IsInterface)//Without !p.IsInterface, I'll get the interface with the concrete types.
                 .ToList()
                 .Select(t => Activator.CreateInstance(Type.GetType(t.AssemblyQualifiedName)) as ITester)
                 .ToList();

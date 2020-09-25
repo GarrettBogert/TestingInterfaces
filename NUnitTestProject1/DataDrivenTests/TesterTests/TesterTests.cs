@@ -12,6 +12,7 @@ using NUnitTestProject1.BaseClasses;
 
 namespace NUnitTestProject1
 {
+    //TParameter will be either TesterCount or TesterCheck - representing parameters/arguments coming from a JSON document.
     public struct TesterData<TParameter>
     {
         public ITester tester;
